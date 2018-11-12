@@ -5,6 +5,9 @@
  */
 package GiaoDien;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -16,6 +19,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.FileInfo;
 import model.JoinFile;
@@ -39,9 +43,24 @@ public class Client extends javax.swing.JFrame {
     private Socket clientSocket;
     private JoinFile jFile  = new JoinFile();
     private String downloadDes = "C:\\Users\\MyPC\\Desktop\\client\\";
+    public WindowListener listener = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            super.windowClosing(e);
+            int result = JOptionPane.showConfirmDialog(null,"DO YOU WANT CLOSE SERVER ?","EXIT SYSTEM",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (result == JOptionPane.YES_OPTION){
+                System.exit(0);
+                
+            }
+
+        }
+    };
     public Client() {
         initComponents();
 //        initConnection();
+        addWindowListener(listener);
         initTable();
         initRoot();
     }
