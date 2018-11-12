@@ -5,6 +5,9 @@
  */
 package GiaoDien;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -18,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.FileInfo;
 import model.JoinFile;
@@ -41,9 +45,26 @@ public class Server extends javax.swing.JFrame implements Runnable{
     
     private File serverStorage = new File("server");
     File[] listFiles = serverStorage.listFiles();
-    
+    public WindowListener listener = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            super.windowClosing(e);
+            int result = JOptionPane.showConfirmDialog(null,"DO YOU WANT CLOSE SERVER ?","EXIT SERVER",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (result == JOptionPane.YES_OPTION){
+                System.exit(0);
+                
+            }
+
+        }
+    };
     public Server() {
         initComponents();
+        addWindowListener(listener);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
         showFile();
 //        initConnection();
     }
@@ -62,12 +83,12 @@ public class Server extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        TableServer = new javax.swing.JTable();
+        OpenBt = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableServer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -75,12 +96,12 @@ public class Server extends javax.swing.JFrame implements Runnable{
                 "Name", "Size"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(TableServer);
 
-        jButton1.setText("Open Server");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        OpenBt.setText("Open Server");
+        OpenBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                OpenBtActionPerformed(evt);
             }
         });
 
@@ -91,7 +112,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(151, 151, 151)
-                .addComponent(jButton1)
+                .addComponent(OpenBt)
                 .addContainerGap(141, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -99,17 +120,17 @@ public class Server extends javax.swing.JFrame implements Runnable{
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(OpenBt)
                 .addGap(0, 26, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void OpenBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenBtActionPerformed
         initConnection();
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_OpenBtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -147,7 +168,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
     }
     private void showFile() {
         jFile = new JoinFile();
-        model = (DefaultTableModel)jTable1.getModel();
+        model = (DefaultTableModel)TableServer.getModel();
         
         Object[] row = new Object[2];
         
@@ -158,9 +179,9 @@ public class Server extends javax.swing.JFrame implements Runnable{
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton OpenBt;
+    private javax.swing.JTable TableServer;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     private void initConnection() {

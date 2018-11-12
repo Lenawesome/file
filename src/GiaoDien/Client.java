@@ -51,7 +51,7 @@ public class Client extends javax.swing.JFrame {
         @Override
         public void windowClosing(WindowEvent e) {
             super.windowClosing(e);
-            int result = JOptionPane.showConfirmDialog(null,"DO YOU WANT CLOSE SERVER ?","EXIT SYSTEM",
+            int result = JOptionPane.showConfirmDialog(null,"DO YOU WANT CLOSE CLIENT ?","EXIT CLIENT",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
             if (result == JOptionPane.YES_OPTION){
@@ -65,6 +65,9 @@ public class Client extends javax.swing.JFrame {
         initComponents();
 //        initConnection();
         addWindowListener(listener);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
         initTable();
         initRoot();
     }
@@ -79,20 +82,21 @@ public class Client extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableClient = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TableServer = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        DownBt = new javax.swing.JButton();
+        UpBt = new javax.swing.JButton();
+        DiveIntoBt = new javax.swing.JButton();
+        RootBt = new javax.swing.JButton();
+        ConBt = new javax.swing.JButton();
+        jProgressBar1 = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableClient.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -100,9 +104,9 @@ public class Client extends javax.swing.JFrame {
                 "Name", "Size"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(TableClient);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TableServer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -110,44 +114,44 @@ public class Client extends javax.swing.JFrame {
                 "Name", "Size"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(TableServer);
 
         jLabel1.setText("Client");
 
         jLabel2.setText("Server");
 
-        jButton1.setText("Download");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        DownBt.setText("Download");
+        DownBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                DownBtActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Upload");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        UpBt.setText("Upload");
+        UpBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                UpBtActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Dive Into");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        DiveIntoBt.setText("Dive Into");
+        DiveIntoBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                DiveIntoBtActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Root");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        RootBt.setText("Root");
+        RootBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                RootBtActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Connect");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        ConBt.setText("Connect");
+        ConBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                ConBtActionPerformed(evt);
             }
         });
 
@@ -165,13 +169,17 @@ public class Client extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(DownBt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(UpBt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DiveIntoBt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(RootBt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ConBt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(50, 50, 50)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(233, 233, 233)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,28 +196,30 @@ public class Client extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(97, 97, 97)
-                        .addComponent(jButton3)
+                        .addComponent(DiveIntoBt)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4)
+                        .addComponent(RootBt)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)
+                        .addComponent(DownBt)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)
+                        .addComponent(UpBt)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton5)))
-                .addGap(108, 108, 108))
+                        .addComponent(ConBt)))
+                .addGap(39, 39, 39)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void DownBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DownBtActionPerformed
         sendDownloadRequest();
 //        receiveFile();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_DownBtActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int rowSelected = jTable1.getSelectedRow();
+    private void DiveIntoBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiveIntoBtActionPerformed
+        int rowSelected = TableClient.getSelectedRow();
         if(rowSelected != -1){
             String path = model1.getValueAt(rowSelected, 0).toString();
             try {
@@ -219,17 +229,17 @@ public class Client extends javax.swing.JFrame {
         }
         }
        
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_DiveIntoBtActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void RootBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RootBtActionPerformed
         model1.setRowCount(0);
         initRoot();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_RootBtActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void UpBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpBtActionPerformed
         DataOutputStream dos;
         try {
-            int rowSelected = jTable1.getSelectedRow();
+            int rowSelected = TableClient.getSelectedRow();
             if(rowSelected != -1){
                 String path = model1.getValueAt(rowSelected, 0).toString();
                 dos = new DataOutputStream(clientSocket.getOutputStream());
@@ -246,12 +256,12 @@ public class Client extends javax.swing.JFrame {
 //                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
 //            }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_UpBtActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void ConBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConBtActionPerformed
         initConnection();
         receiveFromServer();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_ConBtActionPerformed
 
     public void upload(String path) {
         for (File f : listFile) {
@@ -330,17 +340,18 @@ public class Client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton ConBt;
+    private javax.swing.JButton DiveIntoBt;
+    private javax.swing.JButton DownBt;
+    private javax.swing.JButton RootBt;
+    private javax.swing.JTable TableClient;
+    private javax.swing.JTable TableServer;
+    private javax.swing.JButton UpBt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 
     private void initRoot() {
@@ -355,8 +366,8 @@ public class Client extends javax.swing.JFrame {
     }
     
     private void initTable() {
-        model1 = (DefaultTableModel) jTable1.getModel();
-        model2 = (DefaultTableModel) jTable2.getModel();
+        model1 = (DefaultTableModel) TableClient.getModel();
+        model2 = (DefaultTableModel) TableServer.getModel();
     }
 
     private void sendToServer(File f) {
@@ -403,7 +414,7 @@ public class Client extends javax.swing.JFrame {
     private void sendDownloadRequest() {
         DataOutputStream dos = null;
         try {
-            int rowSelected1 = jTable1.getSelectedRow();
+            int rowSelected1 = TableClient.getSelectedRow();
             if(rowSelected1 != -1){
                 String desName = model1.getValueAt(rowSelected1, 0).toString();
                 for(File f : listFile){
@@ -419,7 +430,7 @@ public class Client extends javax.swing.JFrame {
 //            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
 //            System.out.println(dis.readUTF());
             
-            int rowSelected2 = jTable2.getSelectedRow();
+            int rowSelected2 = TableServer.getSelectedRow();
             if(rowSelected2 != -1){
                 dos = new DataOutputStream(clientSocket.getOutputStream());
                 dos.writeUTF("Download");
