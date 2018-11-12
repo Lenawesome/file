@@ -197,7 +197,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
     }
 
     private void receiveFile() {
-        ObjectInputStream ois = null;
+        ObjectInputStream ois;
             try {
                 ois = new ObjectInputStream(clientSocket.getInputStream());
                 FileInfo fileInfo = (FileInfo) ois.readObject();
