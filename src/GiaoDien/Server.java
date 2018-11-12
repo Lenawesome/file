@@ -34,12 +34,12 @@ public class Server extends javax.swing.JFrame implements Runnable{
      * Creates new form Server
      */
     JoinFile jFile = new JoinFile();
-    String des = "C:\\Users\\MyPC\\Desktop\\server\\";
+    String des = "server\\";
     private ServerSocket server;
     private DefaultTableModel model;
     private Socket clientSocket;
     
-    private File serverStorage = new File("C:\\Users\\MyPC\\Desktop\\server");
+    private File serverStorage = new File("server");
     File[] listFiles = serverStorage.listFiles();
     
     public Server() {

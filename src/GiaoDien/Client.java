@@ -42,7 +42,11 @@ public class Client extends javax.swing.JFrame {
     private DefaultTableModel model2;
     private Socket clientSocket;
     private JoinFile jFile  = new JoinFile();
-    private String downloadDes = "C:\\Users\\MyPC\\Desktop\\client\\";
+    private String downloadDes = "client\\";
+    
+    private String hostName = "localhost";
+    private int port = 2001;
+    
     public WindowListener listener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
@@ -201,17 +205,20 @@ public class Client extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         sendDownloadRequest();
-        receiveFile();
+//        receiveFile();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int rowSelected = jTable1.getSelectedRow();
-        String path = model1.getValueAt(rowSelected, 0).toString();
-        try {
-            diveInto(path);
-        } catch (IOException ex) {
+        if(rowSelected != -1){
+            String path = model1.getValueAt(rowSelected, 0).toString();
+            try {
+                diveInto(path);
+            }catch (IOException ex) {
             System.out.println(ex);
         }
+        }
+       
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -220,13 +227,16 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        DataOutputStream dos = null;
+        DataOutputStream dos;
         try {
             int rowSelected = jTable1.getSelectedRow();
-            String path = model1.getValueAt(rowSelected, 0).toString();
-            dos = new DataOutputStream(clientSocket.getOutputStream());
-            dos.writeUTF("Upload");
-            upload(path);
+            if(rowSelected != -1){
+                String path = model1.getValueAt(rowSelected, 0).toString();
+                dos = new DataOutputStream(clientSocket.getOutputStream());
+                dos.writeUTF("Upload");
+                upload(path);
+            }
+            
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
 //        } finally {
@@ -363,7 +373,7 @@ public class Client extends javax.swing.JFrame {
 
     private void initConnection() {
         try {
-            clientSocket = new Socket("192.168.1.24", 2001);
+            clientSocket = new Socket(hostName, port);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -391,30 +401,37 @@ public class Client extends javax.swing.JFrame {
     }
 
     private void sendDownloadRequest() {
+        DataOutputStream dos = null;
         try {
-            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-            dos.writeUTF("Download");
-            int rowSelected2 = jTable1.getSelectedRow();
-            String desName = model1.getValueAt(rowSelected2, 0).toString();
-            for(File f : listFile){
-                if(f.getName().equals(desName)){
-                    downloadDes = f.getAbsolutePath();
-                    downloadDes = downloadDes+"\\";
+            int rowSelected1 = jTable1.getSelectedRow();
+            if(rowSelected1 != -1){
+                String desName = model1.getValueAt(rowSelected1, 0).toString();
+                for(File f : listFile){
+                    if(f.getName().equals(desName)){
+                        downloadDes = f.getAbsolutePath();
+                        downloadDes = downloadDes+"\\";
+                    }
                 }
             }
+            
             System.out.println(downloadDes);
             
 //            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
 //            System.out.println(dis.readUTF());
             
-            int rowSelected = jTable2.getSelectedRow();
-            String path = model2.getValueAt(rowSelected, 0).toString();
-            for (File f : listFiles2) {
-                if (f.getName().equals(path)) {
-                    dos.writeUTF(f.getAbsolutePath());
-                    break;
-//                    dos.flush();
+            int rowSelected2 = jTable2.getSelectedRow();
+            if(rowSelected2 != -1){
+                dos = new DataOutputStream(clientSocket.getOutputStream());
+                dos.writeUTF("Download");
+                String path = model2.getValueAt(rowSelected2, 0).toString();
+                for (File f : listFiles2) {
+                    if (f.getName().equals(path)) {
+                        dos.writeUTF(f.getAbsolutePath());
+                        break;
+    //                    dos.flush();
+                    }
                 }
+                receiveFile();
             }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
