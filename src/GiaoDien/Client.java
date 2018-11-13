@@ -225,12 +225,12 @@ public class Client extends javax.swing.JFrame {
         sendDownloadRequest();
         try {
             Thread.sleep(1000);
-            initConnection();
-            receiveFromServer();
 //        receiveFile();
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        initConnection();
+        receiveFromServer();
     }//GEN-LAST:event_DownBtActionPerformed
 
     private void DiveIntoBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiveIntoBtActionPerformed
@@ -273,11 +273,11 @@ public class Client extends javax.swing.JFrame {
         }
         try {
             Thread.sleep(1000);
-            initConnection();
-            receiveFromServer();
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        initConnection();
+        receiveFromServer();
     }//GEN-LAST:event_UpBtActionPerformed
 
     private void ConBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConBtActionPerformed
