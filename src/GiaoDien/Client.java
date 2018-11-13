@@ -21,10 +21,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.DownlaodThread;
 import model.FileInfo;
 import model.JoinFile;
 import model.ServerDirectory;
 import model.SplitFile;
+import model.UploadThread;
 
 /**
  *
@@ -46,6 +48,9 @@ public class Client extends javax.swing.JFrame {
     
     private String hostName = "localhost";
     private int port = 2001;
+    
+    DownlaodThread downlaodThread;
+    UploadThread uploadThread;
     
     public WindowListener listener = new WindowAdapter() {
         @Override
@@ -222,15 +227,17 @@ public class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DownBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DownBtActionPerformed
-        sendDownloadRequest();
-        try {
-            Thread.sleep(1000);
-//        receiveFile();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initConnection();
-        receiveFromServer();
+//        sendDownloadRequest();
+//        try {
+//            Thread.sleep(1000);
+////        receiveFile();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        initConnection();
+//        receiveFromServer();
+        downlaodThread = new DownlaodThread(listFiles2, model1, model2, clientSocket, Progress, TableClient, TableServer);
+        downlaodThread.start();
     }//GEN-LAST:event_DownBtActionPerformed
 
     private void DiveIntoBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiveIntoBtActionPerformed
@@ -252,32 +259,8 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_RootBtActionPerformed
 
     private void UpBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpBtActionPerformed
-        DataOutputStream dos;
-        try {
-            int rowSelected = TableClient.getSelectedRow();
-            if(rowSelected != -1){
-                String path = model1.getValueAt(rowSelected, 0).toString();
-                dos = new DataOutputStream(clientSocket.getOutputStream());
-                dos.writeUTF("Upload");
-                upload(path);
-            }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            try {
-////                dos.close();
-//            } catch (IOException ex) {
-//                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initConnection();
-        receiveFromServer();
+        uploadThread = new UploadThread(listFile, listFiles2, model1, model2, clientSocket, Progress, TableClient, TableServer);
+        uploadThread.start();
     }//GEN-LAST:event_UpBtActionPerformed
 
     private void ConBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConBtActionPerformed
@@ -285,13 +268,13 @@ public class Client extends javax.swing.JFrame {
         receiveFromServer();
     }//GEN-LAST:event_ConBtActionPerformed
 
-    public void upload(String path) {
-        for (File f : listFile) {
-            if (f.getName().equals(path) && f.isFile()) {
-                sendToServer(f);
-            }
-        }
-    }
+//    public void upload(String path) {
+////        for (File f : listFile) {
+////            if (f.getName().equals(path) && f.isFile()) {
+////                sendToServer(f);
+////            }
+////        }
+////    }
 
     public boolean diveInto(String path) throws IOException {
 //        for(int i = 0; i < listFile.length; i ++){
@@ -393,17 +376,17 @@ public class Client extends javax.swing.JFrame {
         model2 = (DefaultTableModel) TableServer.getModel();
     }
 
-    private void sendToServer(File f) {
-        
-        SplitFile splitFile = new SplitFile();
-        try {
-            System.out.println(splitFile.splitFile(f.getAbsolutePath(), 1024 * 300, clientSocket));
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    private void sendToServer(File f) {
+//        
+//        SplitFile splitFile = new SplitFile();
+//        try {
+//            System.out.println(splitFile.splitFile(f.getAbsolutePath(), 1024 * 300, clientSocket));
+//        } catch (IOException ex) {
+//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     private void initConnection() {
         try {
@@ -434,79 +417,79 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
-    private void sendDownloadRequest() {
-        DataOutputStream dos = null;
-        try {
-            int rowSelected1 = TableClient.getSelectedRow();
-            if(rowSelected1 != -1){
-                String desName = model1.getValueAt(rowSelected1, 0).toString();
-                for(File f : listFile){
-                    if(f.getName().equals(desName)){
-                        downloadDes = f.getAbsolutePath();
-                        downloadDes = downloadDes+"\\";
-                    }
-                }
-            }
-            
-            System.out.println(downloadDes);
-            
-//            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-//            System.out.println(dis.readUTF());
-            
-            int rowSelected2 = TableServer.getSelectedRow();
-            if(rowSelected2 != -1){
-                dos = new DataOutputStream(clientSocket.getOutputStream());
-                dos.writeUTF("Download");
-                String path = model2.getValueAt(rowSelected2, 0).toString();
-                for (File f : listFiles2) {
-                    if (f.getName().equals(path)) {
-                        dos.writeUTF(f.getAbsolutePath());
-                        break;
-    //                    dos.flush();
-                    }
-                }
-                receiveFile();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-       private void receiveFile() {
-        ObjectInputStream ois;
-            try {
-                ois = new ObjectInputStream(clientSocket.getInputStream());
-                FileInfo fileInfo = (FileInfo) ois.readObject();
-                InputStream is = clientSocket.getInputStream();
-                byte[] arr = new byte[1024*300];
-                for (int i = 1; i <= fileInfo.getPiecesOfFile(); i++) {
-                    int j = 0;
-                    long a = 0;
-    //                OutputStream os = new FileOutputStream(dest + sourceFile.getName() + "." + i);
-                    OutputStream os = new FileOutputStream(downloadDes + fileInfo.getFileName()+ "." + i);
-                    while ((j = is.read(arr)) != -1) {
-                        os.write(arr, 0, j);
-                        a += j;
-                        if (a >= fileInfo.getPartLength()) {
-                            break;
-                        }
-                    }
-                    System.out.println("file cắt được "+fileInfo.getFileName()+"."+i);
-                    os.flush();
-                    os.close();
-                }
-                
-                jFile.joinFile(downloadDes+fileInfo.getFileName()+".1");
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-//                try {
-//                    ois.close();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//    private void sendDownloadRequest() {
+//        DataOutputStream dos = null;
+//        try {
+//            int rowSelected1 = TableClient.getSelectedRow();
+//            if(rowSelected1 != -1){
+//                String desName = model1.getValueAt(rowSelected1, 0).toString();
+//                for(File f : listFile){
+//                    if(f.getName().equals(desName)){
+//                        downloadDes = f.getAbsolutePath();
+//                        downloadDes = downloadDes+"\\";
+//                    }
 //                }
-            }
-    }
+//            }
+//            
+//            System.out.println(downloadDes);
+//            
+////            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+////            System.out.println(dis.readUTF());
+//            
+//            int rowSelected2 = TableServer.getSelectedRow();
+//            if(rowSelected2 != -1){
+//                dos = new DataOutputStream(clientSocket.getOutputStream());
+//                dos.writeUTF("Download");
+//                String path = model2.getValueAt(rowSelected2, 0).toString();
+//                for (File f : listFiles2) {
+//                    if (f.getName().equals(path)) {
+//                        dos.writeUTF(f.getAbsolutePath());
+//                        break;
+//    //                    dos.flush();
+//                    }
+//                }
+//                receiveFile();
+//            }
+//        } catch (IOException ex) {
+//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+
+//       private void receiveFile() {
+//        ObjectInputStream ois;
+//            try {
+//                ois = new ObjectInputStream(clientSocket.getInputStream());
+//                FileInfo fileInfo = (FileInfo) ois.readObject();
+//                InputStream is = clientSocket.getInputStream();
+//                byte[] arr = new byte[1024*300];
+//                for (int i = 1; i <= fileInfo.getPiecesOfFile(); i++) {
+//                    int j = 0;
+//                    long a = 0;
+//    //                OutputStream os = new FileOutputStream(dest + sourceFile.getName() + "." + i);
+//                    OutputStream os = new FileOutputStream(downloadDes + fileInfo.getFileName()+ "." + i);
+//                    while ((j = is.read(arr)) != -1) {
+//                        os.write(arr, 0, j);
+//                        a += j;
+//                        if (a >= fileInfo.getPartLength()) {
+//                            break;
+//                        }
+//                    }
+//                    System.out.println("file cắt được "+fileInfo.getFileName()+"."+i);
+//                    os.flush();
+//                    os.close();
+//                }
+//                
+//                jFile.joinFile(downloadDes+fileInfo.getFileName()+".1");
+//            } catch (IOException ex) {
+//                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (ClassNotFoundException ex) {
+//                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//            } finally {
+////                try {
+////                    ois.close();
+////                } catch (IOException ex) {
+////                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+////                }
+//            }
+//    }
 }

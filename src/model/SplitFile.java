@@ -17,13 +17,15 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 
 /**
  *
  * @author MyPC
  */
 public class SplitFile {
-     public boolean splitFile(String source, long partSize,Socket clientSocket) throws FileNotFoundException, IOException, InterruptedException {
+     public boolean splitFile(String source, long partSize,Socket clientSocket,JProgressBar jProgressBar,int c) throws FileNotFoundException, IOException, InterruptedException {
        
         File sourceFile = new File(source);
         if (sourceFile.exists()) {
@@ -46,6 +48,7 @@ public class SplitFile {
             InputStream is = new FileInputStream(sourceFile);
             byte[] arr = new byte[1024*300];
             OutputStream os = null;
+            jProgressBar.setValue(0);
             for (int i = 1; i <= numbPart; i++) {
                 int j = 0;
                 long a = 0;
@@ -60,6 +63,11 @@ public class SplitFile {
                 }
                 System.out.println("file cắt được "+sourceFile.getName()+"."+i);
                 os.flush();
+                    jProgressBar.setValue(i*100/fileInfo.getPiecesOfFile());
+                    if(jProgressBar.getValue() == 100 && c == 2){
+                        JOptionPane.showMessageDialog(null, "Done");
+                        jProgressBar.setValue(0);
+                    }
 //                os.close();
             }
 //            clientSocket.close();

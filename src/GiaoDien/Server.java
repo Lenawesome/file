@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.table.DefaultTableModel;
 import model.FileInfo;
 import model.JoinFile;
@@ -37,6 +38,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
     /**
      * Creates new form Server
      */
+    JProgressBar progress = new JProgressBar();
     JoinFile jFile = new JoinFile();
     String des = "server\\";
     private ServerSocket server;
@@ -66,6 +68,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
         setLocationRelativeTo(null);
         setResizable(false);
         showFile();
+        progress.setVisible(false);
 //        initConnection();
     }
     
@@ -241,7 +244,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
                     os.flush();
                     os.close();
                 }
-                jFile.joinFile(des+fileInfo.getFileName()+".1");
+                jFile.joinFile(des+fileInfo.getFileName()+".1",progress,fileInfo.getPiecesOfFile(),1);
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -263,7 +266,7 @@ public class Server extends javax.swing.JFrame implements Runnable{
             String path = dis.readUTF();
             SplitFile splitFile = new SplitFile();
         try {
-            System.out.println(splitFile.splitFile(path, 1024 * 300, clientSocket));
+            System.out.println(splitFile.splitFile(path, 1024 * 300, clientSocket,progress,1));
         } catch (IOException | InterruptedException ex) {
             System.out.println(ex);
         }
